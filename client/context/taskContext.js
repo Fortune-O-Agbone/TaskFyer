@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { createContext, useEffect } from "react";
 import { useUserContext } from "./userContext";
+import toast from "react-hot-toast";
 
 const TasksContext = createContext();
 
@@ -13,7 +14,38 @@ export const TasksProvider = ({ children }) => {
     const [loading, setLoading] = React.useState(false);
     const [task, setTask] = React.useState({});
 
+    const [isEditing, setIsEditing] = React.useState(false);
     const [priority, setPriority] = React.useState("all");
+    const [activeTask, setActiveTask] = React.useState(null);
+    const [modalMode, setModalMode] = React.useState("");
+    const [profileModal, setProfileModal] = React.useState(false);
+
+    const openModalForAdd = () => {
+        setModalMode("add");
+        setIsEditing(true);
+        setTask({});
+    };
+
+    const openModalForEdit = (task) => {
+        setModalMode("edit");
+        setIsEditing(true);
+        setTask(task);
+        setTask({});
+    };
+
+    const openProfileModal = () => {
+        setProfileModal(true);
+    };
+
+    const closeModal = () => {
+        setIsEditing(false);
+        setProfileModal(false);
+        setModalMode("");
+        setActiveTask(null);
+        setTask({});
+      };
+    
+
 
     //get tasks
     const getTasks = async () => {
@@ -96,7 +128,6 @@ export const TasksProvider = ({ children }) => {
         }
     };
 
-
     useEffect(() => {
         getTasks();
     }, [userId]);
@@ -117,6 +148,12 @@ export const TasksProvider = ({ children }) => {
                 priority,
                 setPriority,
                 handleInput,
+                isEditing,
+                setIsEditing,
+                openModalForAdd,
+                openModalForEdit,
+                activeTask,
+                closeModal,
             }}>
             {children}
         </TasksContext.Provider>
