@@ -17,6 +17,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart"
+import { useTasks } from "@/context/taskContext"
 
 export const description = "A radial chart with stacked sections";
 
@@ -32,14 +33,16 @@ const chartConfig = {
 } satisfies ChartConfig
 
 function RadialCHart() {
-    const tasksTotal = 100;
+    const { tasks, completedTasks, activeTasks } = useTasks();
+    const tasksTotal = tasks.length;
 
     const chartData = [
         {
-            pending: 80,
-            completed: 20,
+            pending: activeTasks.length,
+            completed: completedTasks.length,
         },
     ];
+
 
     return (
         <Card className="flex flex-col border-2 border-white shadow-none bg-[#EDEDED]">
@@ -47,7 +50,7 @@ function RadialCHart() {
                 <CardTitle>Completed vs Pending Tasks</CardTitle>
                 <CardDescription>Task completion status.</CardDescription>
             </CardHeader>
-            
+
             <CardContent className="flex flex-1 items-center pb-0">
                 <ChartContainer
                     config={chartConfig}

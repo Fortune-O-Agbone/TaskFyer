@@ -29,8 +29,7 @@ export const TasksProvider = ({ children }) => {
     const openModalForEdit = (task) => {
         setModalMode("edit");
         setIsEditing(true);
-        setTask(task);
-        setTask({});
+        setActiveTask(task);
     };
 
     const openProfileModal = () => {
@@ -43,11 +42,9 @@ export const TasksProvider = ({ children }) => {
         setModalMode("");
         setActiveTask(null);
         setTask({});
-      };
-    
+    };
 
-
-    //get tasks
+    // get tasks
     const getTasks = async () => {
         setLoading(true);
         try {
@@ -128,11 +125,17 @@ export const TasksProvider = ({ children }) => {
         }
     };
 
+    // get completed tasks
+    const completedTasks = tasks.filter((task) => task.completed);
+
+    // get pending tasks
+    const activeTasks = tasks.filter((task) => !task.completed);
+
     useEffect(() => {
         getTasks();
     }, [userId]);
 
-    console.log("Tasks", tasks);
+    console.log("Active tasks", activeTasks);
 
     return (
         <TasksContext.Provider
@@ -154,7 +157,13 @@ export const TasksProvider = ({ children }) => {
                 openModalForEdit,
                 activeTask,
                 closeModal,
-            }}>
+                modalMode,
+                openProfileModal,
+                activeTasks,
+                completedTasks,
+                profileModal,
+            }}
+        >
             {children}
         </TasksContext.Provider>
     );
